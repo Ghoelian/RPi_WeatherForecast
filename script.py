@@ -17,7 +17,6 @@ load_dotenv()
 api_key = os.getenv("API_KEY")
 nominatim_ua = os.getenv("NOMINATIM_USERAGENT")
 location = os.getenv("LOCATION")
-timezone = os.getenv("TIMEZONE")
 
 refresh_button = Button(5)
 
@@ -87,7 +86,7 @@ def draw_two(index, x, y):
     draw.bitmap((x, y), icons[index], fill=1)
     drawRed.bitmap((x, y), icons[index+1])
 
-def get_weather(location, api_key, timezone):
+def get_weather(location, api_key):
     draw.rectangle((0, 0, width, height), outline=1, fill=0)
     drawRed.rectangle((0, 0, width, height), outline=1, fill=1)
     
@@ -103,7 +102,7 @@ def get_weather(location, api_key, timezone):
 
     tomorrow = datetime.datetime(int(year), int(month), int(day)+1, 11, 0).timestamp()
 
-    weather = requests.get(url=f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={api_key}&units=metric&timezone={timezone}").json()
+    weather = requests.get(url=f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={api_key}&units=metric").json()
 
     today_weather = weather["current"]
     
@@ -133,7 +132,7 @@ def get_weather(location, api_key, timezone):
     epd.display(epd.getbuffer(image), epd.getbuffer(imageRed))
     
 while True:    
-    get_weather(location, api_key, timezone)
+    get_weather(location, api_key)
     
     if (iterator >= counter):
         epd.Clear()
@@ -143,6 +142,6 @@ while True:
 
     for i in range(int(delay / 0.1)):
         if (refresh_button.is_pressed):
-            get_weather(location, api_key, timezone)
+            get_weather(location, api_key)
         
         time.sleep(0.1)
