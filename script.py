@@ -17,6 +17,7 @@ load_dotenv()
 api_key = os.getenv("API_KEY")
 nominatim_ua = os.getenv("NOMINATIM_USERAGENT")
 location = os.getenv("LOCATION")
+timezone_offset = os.getenv("TIMEZONE_OFFSET")
 
 refresh_button = Button(5)
 
@@ -100,7 +101,7 @@ def get_weather(location, api_key):
     month = now.strftime("%m")
     year = now.strftime("%Y")
 
-    tomorrow = datetime.datetime(int(year), int(month), int(day)+1, 11, 0).timestamp()
+    tomorrow = datetime.datetime(int(year), int(month), int(day)+1, 13-int(timezone_offset), 0).timestamp()
 
     weather = requests.get(url=f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={api_key}&units=metric").json()
 
