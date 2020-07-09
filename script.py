@@ -7,6 +7,7 @@ import os
 import datetime
 import epd2in7b
 import time
+from gpiozero import Button
 from PIL import Image, ImageDraw, ImageFont
 from geopy import geocoders
 from dotenv import load_dotenv
@@ -17,6 +18,8 @@ api_key = os.getenv("API_KEY")
 nominatim_ua = os.getenv("NOMINATIM_USERAGENT")
 location = os.getenv("LOCATION")
 timezone = os.getenv("TIMEZONE")
+
+refresh_button = Button(5)
 
 nominatim = geocoders.Nominatim(user_agent=nominatim_ua)
 
@@ -38,7 +41,7 @@ icons = {
             13: Image.open("./images/50n.png")
         }
 
-delay = 60.0 * 60.0
+delay = 60 * 60
 width = 176
 height = 264
 iterator = 0
@@ -56,8 +59,6 @@ font_big = ImageFont.truetype("./fonts/Roboto-Regular.ttf", 34)
 
 draw = ImageDraw.Draw(image)
 drawRed = ImageDraw.Draw(imageRed)
-
-startTime = time.time() - delay
 
 def get_icon(arg, x, y):
     if (arg == "01n" or arg == "01d"):
@@ -87,6 +88,9 @@ def draw_two(index, x, y):
     drawRed.bitmap((x, y), icons[index+1])
 
 def get_weather(location, api_key, timezone):
+    draw.rectangle((0, 0, width, height), outline=1, fill=0)
+    drawRed.rectangle((0, 0, width, height), outline=1, fill=1)
+    
     location = nominatim.geocode(location)
     lon = location.longitude
     lat = location.latitude
@@ -126,19 +130,19 @@ def get_weather(location, api_key, timezone):
 
     drawRed.line([(0, height/2), (width, height/2)], width=1, fill=0)
     
-while True:
-    draw.rectangle((0, 0, width, height), outline=1, fill=0)
-    drawRed.rectangle((0, 0, width, height), outline=1, fill=1)
+    epd.display(epd.getbuffer(image), epd.getbuffer(imageRed))
     
+while True:    
     get_weather(location, api_key, timezone)
     
     if (iterator >= counter):
         epd.Clear()
         iterator = 0
     
-    epd.display(epd.getbuffer(image), epd.getbuffer(imageRed))
-    
     iterator += 1
-    timeToSleep = delay - min((time.time() - startTime), delay)
-    time.sleep(timeToSleep)
-    startTime = time.time()
+
+    for i in range(int(delay / 0.1)):
+        if (refresh_button.is_pressed):
+            get_weather(location, api_key, timezone)
+        
+        time.sleep(0.1)

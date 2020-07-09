@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "593238f8f0272742b4c512e0030c22a04520ab5ad5cf397d6d1528f61980fbaa"
+            "sha256": "609e355bcb59a94c8c7a6ba0cd32e39ef2af01031a315ab459bf33ec1465fd64"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -30,6 +30,13 @@
             ],
             "version": "==3.0.4"
         },
+        "colorzero": {
+            "hashes": [
+                "sha256:acba47119b5d8555680d3cda9afe6ccc5481385ccc3c00084dd973f7aa184599",
+                "sha256:e3c36d15b293de2b2f77ff54a5bd243fffac941ed0a5332d0697a6612a26a0a3"
+            ],
+            "version": "==1.1"
+        },
         "geographiclib": {
             "hashes": [
                 "sha256:12bd46ee7ec25b291ea139b17aa991e7ef373e21abd053949b75c0e9ca55c632",
@@ -44,6 +51,14 @@
             ],
             "index": "pypi",
             "version": "==2.0.0"
+        },
+        "gpiozero": {
+            "hashes": [
+                "sha256:101044038e71cec8be2fa841d4cea9e50e7962e9fb0287f465298b59e3f06594",
+                "sha256:ae1a8dc4e6e793ffd8f900968f3290d218052c46347fa0c0503c65fabe422e4d"
+            ],
+            "index": "pypi",
+            "version": "==1.5.1"
         },
         "idna": {
             "hashes": [

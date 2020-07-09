@@ -12,6 +12,7 @@ requests = "*"
 pillow = "*"
 spidev = "*"
 "rpi.gpio" = "*"
+gpiozero = "*"
 
 [requires]
 python_version = "3.7"
