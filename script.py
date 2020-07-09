@@ -128,7 +128,7 @@ def get_weather(location, api_key):
     get_icon(tomorrow_weather["weather"][0]["icon"], 10, (height/2)+10)
 
 
-    drawRed.line([(0, height/2), (width, height/2)], width=1, fill=0)
+    draw.line([(0, height/2), (width, height/2)], width=1, fill=1)
     
     epd.display(epd.getbuffer(image), epd.getbuffer(imageRed))
     
