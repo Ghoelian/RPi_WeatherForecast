@@ -77,7 +77,7 @@ def get_icon(arg, x, y):
     if (arg == "13n" or arg == "13d"):
         draw_two(12, x, y)
     if (arg == "50n" or arg == "50d"):
-        draw_two(13, x, y)
+        draw_one(13, x, y)
 
 def draw_one(index, x, y):
     draw.bitmap((x, y), icons[index], fill=1)
