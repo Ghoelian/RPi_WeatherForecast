@@ -45,7 +45,7 @@ delay = 60 * 60
 width = 176
 height = 264
 iterator = 0
-counter = 10
+counter = 1
 
 epd = epd2in7b.EPD()
 epd.init()
@@ -90,13 +90,13 @@ def draw_two(index, x, y):
 def get_weather(location, api_key):
     draw.rectangle((0, 0, width, height), outline=1, fill=0)
     drawRed.rectangle((0, 0, width, height), outline=1, fill=1)
-    
+
     location = nominatim.geocode(location)
     lon = location.longitude
     lat = location.latitude
-    
+
     now = datetime.date.today()
-    
+
     day = now.strftime("%d")
     month = now.strftime("%m")
     year = now.strftime("%Y")
@@ -106,19 +106,19 @@ def get_weather(location, api_key):
     weather = requests.get(url=f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={api_key}&units=metric").json()
 
     today_weather = weather["current"]
-    
+
     for hour in weather["hourly"]:
         if (hour["dt"] == tomorrow):
             tomorrow_weather = hour
-            
+
     draw.text((2, 0), "Today", font=font_small, fill=1)
     draw.text((2, 15), str(round(today_weather["temp"])), font=font_regular, fill=1)
     drawRed.text((font_regular.getsize(str(round(today_weather["temp"])))[0]+2, 15), "°", font=font_regular, fill=0)
     draw.text((font_regular.getsize("°")[0]+font_regular.getsize(str(round(today_weather["temp"])))[0]+2, 15), "C", font=font_regular, fill=1)
     draw.text((width - (font_regular.getsize (today_weather["weather"][0]["main"])[0])-2, 15), today_weather["weather"][0]["main"], font=font_regular, fill=1)
-    
+
     get_icon(today_weather["weather"][0]["icon"], 10, 10)
-    
+
     draw.text((2, height/2), "Tomorrow", font=font_small, fill=1)
     draw.text((2, (height/2)+15), str(round(tomorrow_weather["temp"])), font=font_regular, fill=1)
     drawRed.text((font_regular.getsize(str(round(tomorrow_weather["temp"])))[0]+2, (height/2)+15), "°", font=font_regular, fill=0)
@@ -129,20 +129,20 @@ def get_weather(location, api_key):
 
 
     draw.line([(0, height/2), (width, height/2)], width=1, fill=1)
-    
+
     epd.display(epd.getbuffer(image), epd.getbuffer(imageRed))
-    
-while True:    
+
+while True:
     get_weather(location, api_key)
-    
+
     if (iterator >= counter):
         epd.Clear()
         iterator = 0
-    
+
     iterator += 1
 
     for i in range(int(delay / 0.1)):
         if (refresh_button.is_pressed):
-            get_weather(location, api_key)
-        
+            break
+
         time.sleep(0.1)
