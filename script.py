@@ -133,11 +133,11 @@ def get_weather(location, api_key):
     epd.display(epd.getbuffer(image), epd.getbuffer(imageRed))
 
 while True:
-    get_weather(location, api_key)
-
     if (iterator >= counter):
         epd.Clear()
         iterator = 0
+
+    get_weather(location, api_key)
 
     iterator += 1
 
