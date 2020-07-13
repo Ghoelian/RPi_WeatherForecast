@@ -111,15 +111,19 @@ def get_weather(location, api_key):
         if (hour["dt"] == tomorrow):
             tomorrow_weather = hour
 
-    draw.text((2, 0), "Today", font=font_small, fill=1)
+    today_time = datetime.datetime.utcfromtimestamp(today_weather["dt"]+(int(timezone_offset)*60*60))
+
+    draw.text((2, 0), f"Today {today_time.strftime('%H:%M')}", font=font_small, fill=1)
     draw.text((2, 15), str(round(today_weather["temp"])), font=font_regular, fill=1)
     drawRed.text((font_regular.getsize(str(round(today_weather["temp"])))[0]+2, 15), "°", font=font_regular, fill=0)
     draw.text((font_regular.getsize("°")[0]+font_regular.getsize(str(round(today_weather["temp"])))[0]+2, 15), "C", font=font_regular, fill=1)
     draw.text((width - (font_regular.getsize (today_weather["weather"][0]["main"])[0])-2, 15), today_weather["weather"][0]["main"], font=font_regular, fill=1)
 
     get_icon(today_weather["weather"][0]["icon"], 10, 10)
+    
+    tomorrow_time = datetime.datetime.utcfromtimestamp(tomorrow_weather["dt"]+(int(timezone_offset)*60*60))
 
-    draw.text((2, height/2), "Tomorrow", font=font_small, fill=1)
+    draw.text((2, height/2), f"Tomorrow {tomorrow_time.strftime('%H:%M')}", font=font_small, fill=1)
     draw.text((2, (height/2)+15), str(round(tomorrow_weather["temp"])), font=font_regular, fill=1)
     drawRed.text((font_regular.getsize(str(round(tomorrow_weather["temp"])))[0]+2, (height/2)+15), "°", font=font_regular, fill=0)
     draw.text((font_regular.getsize("°")[0]+font_regular.getsize(str(round(tomorrow_weather["temp"])))[0]+2, (height/2)+15), "C", font=font_regular, fill=1)
