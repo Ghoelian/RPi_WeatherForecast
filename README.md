@@ -2,7 +2,7 @@
 - Python >= 3
 - libopenjp 2.7
 - libtiff 5
-- pipenv
+- pipenv <br />
 pipenv will get all the Python dependencies
 
 # .env vars

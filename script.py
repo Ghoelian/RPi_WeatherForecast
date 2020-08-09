@@ -1,6 +1,6 @@
 import sys
 
-sys.path.insert(1, "./lib")
+sys.path.insert(1, "./lib") # Insert path to e-ink display modules
 
 import requests
 import os
@@ -14,17 +14,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-api_key = os.getenv("API_KEY")
-nominatim_ua = os.getenv("NOMINATIM_USERAGENT")
-location = os.getenv("LOCATION")
-timezone_offset = os.getenv("TIMEZONE_OFFSET")
+api_key = os.getenv("API_KEY") # Used to make requests to OpenWeatherMap
+nominatim_ua = os.getenv("NOMINATIM_USERAGENT") # Used to identify you to Nominatim
+location = os.getenv("LOCATION") # Location to look up the weather for
+timezone_offset = os.getenv("TIMEZONE_OFFSET") # Your timezone offset. Does not account for daylight savings
 
 refresh_button = Button(5)
 
 nominatim = geocoders.Nominatim(user_agent=nominatim_ua)
 
-a = Image.open("./images/01n.png")
-icons = {
+icons = { # Icons from https://openweathermap.org used for displaying current weather. Modified by me so it works with a 3-colour e-ink display
             0: Image.open("./images/01n.png"),
             1: Image.open("./images/02n1.png"),
             2: Image.open("./images/02n2.png"),
@@ -41,26 +40,25 @@ icons = {
             13: Image.open("./images/50n.png")
         }
 
-delay = 60 * 60
-width = 176
+delay = 60 * 60 # Delay for how often to refresh the weather in seconds. 1 hour by default
+width = 176 # Width and height of the e-ink display. My specific model doesn't display the edges very well, so I shrunk it a couple pixels
 height = 264
-iterator = 0
-counter = 1
+iterator = 0 # Keeps track of how many times the display has been redrawn on without fully clearing it
+counter = 1 # How often the display can redraw without clearing. I set it to one, as this script only refreshes once per hour anyway
 
 epd = epd2in7b.EPD()
 epd.init()
 epd.Clear()
 
-image = Image.new('1', (width, height), 255)
-imageRed = Image.new('1', (width, height), 255)
+image = Image.new('1', (width, height), 255) # Image for drawing black/white
+imageRed = Image.new('1', (width, height), 255) # Image for drawing red/white
 font_small = ImageFont.truetype("./fonts/Roboto-Regular.ttf", 15)
 font_regular = ImageFont.truetype("./fonts/Roboto-Regular.ttf", 28)
-font_big = ImageFont.truetype("./fonts/Roboto-Regular.ttf", 34)
 
-draw = ImageDraw.Draw(image)
+draw = ImageDraw.Draw(image) # Draw object for the images
 drawRed = ImageDraw.Draw(imageRed)
 
-def get_icon(arg, x, y):
+def get_icon(arg, x, y): # OpenWeatherMap returns weather codes used for the icons. This gets the icon that belongs to a code
     if (arg == "01n" or arg == "01d"):
         draw_one(0, x, y)
     if (arg == "02n" or arg == "02d"):
@@ -80,39 +78,40 @@ def get_icon(arg, x, y):
     if (arg == "50n" or arg == "50d"):
         draw_one(13, x, y)
 
-def draw_one(index, x, y):
+def draw_one(index, x, y): # Used for drawing icons that only consist of one colour
     draw.bitmap((x, y), icons[index], fill=1)
 
-def draw_two(index, x, y):
+def draw_two(index, x, y): # Used for drawing icons that consist of two colours, in my case red and white
     draw.bitmap((x, y), icons[index], fill=1)
     drawRed.bitmap((x, y), icons[index+1])
 
 def get_weather(location, api_key):
-    draw.rectangle((0, 0, width, height), outline=1, fill=0)
+    draw.rectangle((0, 0, width, height), outline=1, fill=0) # Draw white rectangles to make sure nothing is left behind from a previous draw
     drawRed.rectangle((0, 0, width, height), outline=1, fill=1)
 
-    location = nominatim.geocode(location)
+    location = nominatim.geocode(location) # Use Nominatim to look up lat and lon that belong to a place name
     lon = location.longitude
     lat = location.latitude
 
-    now = datetime.date.today()
+    tomorrow = datetime.datetime.today() + 86400 # 24 hrs from now
 
-    day = now.strftime("%d")
-    month = now.strftime("%m")
-    year = now.strftime("%Y")
+    day = tomorrow.strftime("%d")
+    month = tomorrow.strftime("%m")
+    year = tomorrow.strftime("%Y")
 
-    tomorrow = datetime.datetime(int(year), int(month), int(day)+1, 16-int(timezone_offset), 0).timestamp()
+    tomorrow = datetime.datetime(int(year), int(month), int(day), 15-int(timezone_offset), 0).timestamp() # Get tomorrow's date, but at 15:00 instead of exactly 24 hrs from now
 
-    weather = requests.get(url=f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={api_key}&units=metric").json()
+    weather = requests.get(url=f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={api_key}&units=metric").json() # Get current weather, as well as hourly forecast
 
     today_weather = weather["current"]
 
-    for hour in weather["hourly"]:
+    for hour in weather["hourly"]: # Find forecast with a timestamp for tomorrow 15:00
         if (hour["dt"] == tomorrow):
             tomorrow_weather = hour
 
-    today_time = datetime.datetime.utcfromtimestamp(today_weather["dt"]+(int(timezone_offset)*60*60))
+    today_time = datetime.datetime.utcfromtimestamp(today_weather["dt"]+(int(timezone_offset)*60*60)) # Get today's time, for displaying on the display
 
+    # Boring drawing part
     draw.text((2, 0), f"Today {today_time.strftime('%H:%M')}", font=font_small, fill=1)
     draw.text((2, 15), str(round(today_weather["temp"])), font=font_regular, fill=1)
     drawRed.text((font_regular.getsize(str(round(today_weather["temp"])))[0]+2, 15), "°", font=font_regular, fill=0)
@@ -136,8 +135,8 @@ def get_weather(location, api_key):
 
     epd.display(epd.getbuffer(image), epd.getbuffer(imageRed))
 
-while True:
-    if (iterator >= counter):
+while True: # Main loop
+    if (iterator >= counter): # Clear the display when it has been redrawn more times than the counter should allow
         epd.Clear()
         iterator = 0
 
@@ -145,7 +144,7 @@ while True:
 
     iterator += 1
 
-    for i in range(int(delay / 0.1)):
+    for i in range(int(delay / 0.1)): # Check if refresh button gets pressed. Should refactor this to use events instead of constantly checking in a loop
         if (refresh_button.is_pressed):
             break
 
