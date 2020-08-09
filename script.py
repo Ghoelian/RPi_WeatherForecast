@@ -93,7 +93,7 @@ def get_weather(location, api_key):
     lon = location.longitude
     lat = location.latitude
 
-    tomorrow = datetime.datetime.today().timestamp() + 86400 # 24 hrs from now
+    tomorrow = datetime.datetime.fromtimestamp(datetime.datetime.today().timestamp() + 86400) # 24 hrs from now
 
     day = tomorrow.strftime("%d")
     month = tomorrow.strftime("%m")
