@@ -99,7 +99,7 @@ def get_weather(location, api_key):
     month = tomorrow.strftime("%m")
     year = tomorrow.strftime("%Y")
 
-    tomorrow = datetime.datetime(int(year), int(month), int(day), 15-int(timezone_offset), 0).timestamp() # Get tomorrow's date, but at 15:00 instead of exactly 24 hrs from now
+    tomorrow = datetime.datetime(int(year), int(month), int(day), 16-int(timezone_offset), 0).timestamp() # Get tomorrow's date, but at 15:00 instead of exactly 24 hrs from now. For some reason 15 - 2 (my timezone offset) results in a time of 14:00 CEST, so we subtract from 16 instead
 
     weather = requests.get(url=f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={api_key}&units=metric").json() # Get current weather, as well as hourly forecast
 
