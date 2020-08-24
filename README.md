@@ -3,7 +3,8 @@
 - libtiff-dev
 - libjpeg-dev
 - pipenv <br />
-pipenv will get all the Python dependencies
+pipenv will get all the Python dependencies. <br />
+
 Also, SPI needs to be enabled in raspi-config, else you will get a file not found error.
 
 # Installation
