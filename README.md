@@ -2,6 +2,7 @@
 - Python >= 3
 - libtiff-dev
 - libjpeg-dev
+- libfreetype6-dev
 - pipenv <br />
 pipenv will get all the Python dependencies. <br />
 
