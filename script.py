@@ -44,7 +44,7 @@ delay = 60 * 60 # Delay for how often to refresh the weather in seconds. 1 hour 
 width = 176 # Width and height of the e-ink display. My specific model doesn't display the edges very well, so I shrunk it a couple pixels
 height = 264
 iterator = 0 # Keeps track of how many times the display has been redrawn on without fully clearing it
-counter = 1 # How often the display can redraw without clearing. I set it to one, as this script only refreshes once per hour anyway
+counter = 12 # How often the display can redraw without clearing
 
 epd = epd2in7b.EPD()
 epd.init()
