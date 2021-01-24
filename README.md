@@ -1,5 +1,5 @@
 # Dependencies
-- Python >= 3
+- Python 3.7
 - libtiff-dev
 - libjpeg-dev
 - libfreetype6-dev
