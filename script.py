@@ -125,7 +125,7 @@ def get_weather(location, api_key):
     draw.text((width/2, 2), f"Tomorrow {tomorrow_time.strftime('%H:%M')}", font=font_small, fill=1)
     draw.text(((width/2), 15), str(round(tomorrow_weather["temp"])), font=font_regular, fill=1)
     drawRed.text(((height/2)+15, font_regular.getsize(str(round(tomorrow_weather["temp"])))[0]+2), "°", font=font_regular, fill=0)
-    draw.text(((height/2)+15, font_regular.getsize("°")[0]+font_regular.getsize(str(round(tomorrow_weather["temp"])))[0]+2, "C", font=font_regular, fill=1)
+    draw.text((font_regular.getsize("°")[0]+font_regular.getsize(str(round(tomorrow_weather["temp"])))[0]+2, (height/2)+15), "C", font=font_regular, fill=1)
     draw.text((width-(font_regular.getsize(tomorrow_weather["weather"][0]["main"])[0])-2, (height/2)+15), tomorrow_weather["weather"][0]["main"], font=font_regular, fill=1)
 
     get_icon(tomorrow_weather["weather"][0]["icon"], (width/2)+10, 10)
