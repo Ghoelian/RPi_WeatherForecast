@@ -50,8 +50,8 @@ epd = epd2in7b.EPD()
 epd.init()
 epd.Clear()
 
-image = Image.new('1', (height, width), 255) # Image for drawing black/white
-imageRed = Image.new('1', (height, width), 255) # Image for drawing red/white
+image = Image.new('1', (width, height), 255) # Image for drawing black/white
+imageRed = Image.new('1', (width, height), 255) # Image for drawing red/white
 font_small = ImageFont.truetype("./fonts/Roboto-Regular.ttf", 15)
 font_regular = ImageFont.truetype("./fonts/Roboto-Regular.ttf", 28)
 
@@ -112,26 +112,25 @@ def get_weather(location, api_key):
     today_time = datetime.datetime.utcfromtimestamp(today_weather["dt"]+(int(timezone_offset)*60*60)) # Get today's time, for displaying on the display
 
     # Boring drawing part
-    draw.text((2, 0), f"Today {today_time.strftime('%H:%M')}", font=font_small, fill=1)
+    draw.text((0, 2), f"Today {today_time.strftime('%H:%M')}", font=font_small, fill=1)
     draw.text((2, 15), str(round(today_weather["temp"])), font=font_regular, fill=1)
-    drawRed.text((font_regular.getsize(str(round(today_weather["temp"])))[0]+2, 15), "°", font=font_regular, fill=0)
+    drawRed.text((15, font_regular.getsize(str(round(today_weather["temp"])))[0]+2), "°", font=font_regular, fill=0)
     draw.text((font_regular.getsize("°")[0]+font_regular.getsize(str(round(today_weather["temp"])))[0]+2, 15), "C", font=font_regular, fill=1)
-    draw.text((width - (font_regular.getsize (today_weather["weather"][0]["main"])[0])-2, 15), today_weather["weather"][0]["main"], font=font_regular, fill=1)
+    draw.text((15, height - (font_regular.getsize(today_weather["weather"][0]["main"])[0])-2), today_weather["weather"][0]["main"], font=font_regular, fill=1)
 
     get_icon(today_weather["weather"][0]["icon"], 10, 10)
-    
+
     tomorrow_time = datetime.datetime.utcfromtimestamp(tomorrow_weather["dt"]+(int(timezone_offset)*60*60))
 
-    draw.text((2, height/2), f"Tomorrow {tomorrow_time.strftime('%H:%M')}", font=font_small, fill=1)
-    draw.text((2, (height/2)+15), str(round(tomorrow_weather["temp"])), font=font_regular, fill=1)
-    drawRed.text((font_regular.getsize(str(round(tomorrow_weather["temp"])))[0]+2, (height/2)+15), "°", font=font_regular, fill=0)
-    draw.text((font_regular.getsize("°")[0]+font_regular.getsize(str(round(tomorrow_weather["temp"])))[0]+2, (height/2)+15), "C", font=font_regular, fill=1)
+    draw.text((width/2, 2), f"Tomorrow {tomorrow_time.strftime('%H:%M')}", font=font_small, fill=1)
+    draw.text(((width/2), 15), str(round(tomorrow_weather["temp"])), font=font_regular, fill=1)
+    drawRed.text(((height/2)+15, font_regular.getsize(str(round(tomorrow_weather["temp"])))[0]+2), "°", font=font_regular, fill=0)
+    draw.text(((height/2)+15, font_regular.getsize("°")[0]+font_regular.getsize(str(round(tomorrow_weather["temp"])))[0]+2, "C", font=font_regular, fill=1)
     draw.text((width-(font_regular.getsize(tomorrow_weather["weather"][0]["main"])[0])-2, (height/2)+15), tomorrow_weather["weather"][0]["main"], font=font_regular, fill=1)
 
-    get_icon(tomorrow_weather["weather"][0]["icon"], 10, (height/2)+10)
+    get_icon(tomorrow_weather["weather"][0]["icon"], (width/2)+10, 10)
 
-
-    draw.line([(0, height/2), (width, height/2)], width=1, fill=1)
+    draw.line([(width/2, 0), (width/2, height)], width=1, fill=1)
 
     epd.display(epd.getbuffer(image), epd.getbuffer(imageRed))
 
