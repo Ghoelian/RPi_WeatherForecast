@@ -41,8 +41,8 @@ icons = { # Icons from https://openweathermap.org used for displaying current we
         }
 
 delay = 60 * 60 # Delay for how often to refresh the weather in seconds. 1 hour by default
-width = 176 # Width and height of the e-ink display. My specific model doesn't display the edges very well, so I shrunk it a couple pixels
-height = 264
+width = 264 # Width and height of the e-ink display. My specific model doesn't display the edges very well, so I shrunk it a couple pixels
+height = 176
 iterator = 0 # Keeps track of how many times the display has been redrawn on without fully clearing it
 counter = 12 # How often the display can redraw without clearing
 
@@ -50,8 +50,8 @@ epd = epd2in7b.EPD()
 epd.init()
 epd.Clear()
 
-image = Image.new('1', (width, height), 255) # Image for drawing black/white
-imageRed = Image.new('1', (width, height), 255) # Image for drawing red/white
+image = Image.new('1', (height, width), 255) # Image for drawing black/white
+imageRed = Image.new('1', (height, width), 255) # Image for drawing red/white
 font_small = ImageFont.truetype("./fonts/Roboto-Regular.ttf", 15)
 font_regular = ImageFont.truetype("./fonts/Roboto-Regular.ttf", 28)
 
