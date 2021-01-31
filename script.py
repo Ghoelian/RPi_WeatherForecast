@@ -127,8 +127,7 @@ def get_weather(location, api_key):
 
     draw.line([(width/2, 0), (width/2, height)], width=1, fill=1)
 
+    epd.Clear()
     epd.display(epd.getbuffer(image), epd.getbuffer(imageRed))
-
-epd.Clear()
 
 get_weather(location, api_key)
