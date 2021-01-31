@@ -19,8 +19,6 @@ nominatim_ua = os.getenv("NOMINATIM_USERAGENT") # Used to identify you to Nomina
 location = os.getenv("LOCATION") # Location to look up the weather for
 timezone_offset = os.getenv("TIMEZONE_OFFSET") # Your timezone offset. Does not account for daylight savings
 
-refresh_button = Button(5)
-
 nominatim = geocoders.Nominatim(user_agent=nominatim_ua)
 
 icons = { # Icons from https://openweathermap.org used for displaying current weather. Modified by me so it works with a 3-colour e-ink display
@@ -40,11 +38,8 @@ icons = { # Icons from https://openweathermap.org used for displaying current we
             13: Image.open("./images/50n.png")
         }
 
-delay = 60 * 60 # Delay for how often to refresh the weather in seconds. 1 hour by default
 width = 264 # Width and height of the e-ink display. My specific model doesn't display the edges very well, so I shrunk it a couple pixels
 height = 176
-iterator = 0 # Keeps track of how many times the display has been redrawn on without fully clearing it
-counter = 12 # How often the display can redraw without clearing
 
 epd = epd2in7b.EPD()
 epd.init()
@@ -134,17 +129,6 @@ def get_weather(location, api_key):
 
     epd.display(epd.getbuffer(image), epd.getbuffer(imageRed))
 
-while True: # Main loop
-    if (iterator >= counter): # Clear the display when it has been redrawn more times than the counter should allow
-        epd.Clear()
-        iterator = 0
+epd.Clear()
 
-    get_weather(location, api_key)
-
-    iterator += 1
-
-    for i in range(int(delay / 0.1)): # Check if refresh button gets pressed. Should refactor this to use events instead of constantly checking in a loop
-        if (refresh_button.is_pressed):
-            break
-
-        time.sleep(0.1)
+get_weather(location, api_key)
